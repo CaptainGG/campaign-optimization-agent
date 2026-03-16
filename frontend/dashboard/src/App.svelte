@@ -52,7 +52,7 @@
   <header>
     <div class="logo">
       <span class="logo-mark">◆</span>
-      <span class="logo-text">Adnami</span>
+      <span class="logo-text">Campaign Optimization</span>
       <span class="logo-sub">Campaign Agent</span>
     </div>
     <div class="header-right">

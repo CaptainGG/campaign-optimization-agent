@@ -1,6 +1,7 @@
 using CampaignAgent.Core.Agent;
 using CampaignAgent.Core.EventStore;
 using CampaignAgent.Core.Simulation;
+using CampaignAgentService = CampaignAgent.Core.Agent.CampaignAgent;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddSingleton<IMetricsAggregator, MetricsAggregator>();
 
 // Swap MockLlmClient → OpenAiLlmClient here when a real API key is available
 builder.Services.AddSingleton<ILlmClient, MockLlmClient>();
-builder.Services.AddSingleton<ICampaignAgent, CampaignAgent>();
+builder.Services.AddSingleton<ICampaignAgent, CampaignAgentService>();
 
 // Background event simulator (dev only)
 builder.Services.AddHostedService<EventSimulator>();

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Campaign, CampaignMetrics, AgentRecommendation } from './types';
+  import { actionLabel, isNoAction } from './recommendations';
 
   export let campaign: Campaign;
   export let metrics: CampaignMetrics | undefined;
@@ -9,23 +10,14 @@
     low: '#4fffb0',
     medium: '#ffc94d',
     high: '#ff7043',
-    critical: '#ff1744',
-  };
-
-  const actionLabel: Record<string, string> = {
-    NoAction: '✓ No action',
-    PauseCreative: '⏸ Pause creative',
-    ReallocateBudget: '↔ Reallocate budget',
-    IncreaseBid: '↑ Increase bid',
-    DecreaseBid: '↓ Decrease bid',
-    FlagAnomaly: '⚠ Anomaly flagged',
+    critical: '#ff1744'
   };
 
   $: ctrDelta = metrics ? metrics.ctr - metrics.targetCtr : 0;
   $: cpmDelta = metrics ? metrics.cpm - metrics.targetCpm : 0;
 </script>
 
-<div class="card" class:has-alert={recommendation && recommendation.action !== 'NoAction'}>
+<div class="card" class:has-alert={recommendation && !isNoAction(recommendation.action)}>
   <div class="card-header">
     <span class="campaign-name">{campaign.name}</span>
     <span class="campaign-id">{campaign.id}</span>
@@ -70,13 +62,13 @@
       </div>
     </div>
   {:else}
-    <div class="loading">Loading metrics…</div>
+    <div class="loading">Loading metrics...</div>
   {/if}
 
   {#if recommendation}
     <div class="recommendation" style="border-color: {urgencyColor[recommendation.urgency] ?? '#4fffb0'}22; background: {urgencyColor[recommendation.urgency] ?? '#4fffb0'}08">
       <div class="rec-action" style="color: {urgencyColor[recommendation.urgency]}">
-        {actionLabel[recommendation.action] ?? recommendation.action}
+        {actionLabel(recommendation.action)}
       </div>
       <p class="rec-reason">{recommendation.reason}</p>
     </div>
@@ -92,7 +84,9 @@
     transition: border-color 0.2s;
   }
 
-  .card.has-alert { border-color: #2a2230; }
+  .card.has-alert {
+    border-color: #2a2230;
+  }
 
   .card-header {
     display: flex;
@@ -101,8 +95,17 @@
     margin-bottom: 16px;
   }
 
-  .campaign-name { font-size: 15px; font-weight: 600; color: #dde0ea; }
-  .campaign-id { font-size: 11px; color: #3a4050; font-family: monospace; }
+  .campaign-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #dde0ea;
+  }
+
+  .campaign-id {
+    font-size: 11px;
+    color: #3a4050;
+    font-family: monospace;
+  }
 
   .metrics-grid {
     display: grid;
@@ -111,14 +114,43 @@
     margin-bottom: 16px;
   }
 
-  .metric { display: flex; flex-direction: column; gap: 3px; }
-  .metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #4a5260; }
-  .metric-value { font-size: 16px; font-weight: 600; color: #cdd0da; }
-  .metric-value.positive { color: #4fffb0; }
-  .metric-value.negative { color: #ff7043; }
-  .delta { font-size: 11px; font-weight: 400; opacity: 0.7; }
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
 
-  .budget-bar-wrapper { margin-bottom: 16px; }
+  .metric-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #4a5260;
+  }
+
+  .metric-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #cdd0da;
+  }
+
+  .metric-value.positive {
+    color: #4fffb0;
+  }
+
+  .metric-value.negative {
+    color: #ff7043;
+  }
+
+  .delta {
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  .budget-bar-wrapper {
+    margin-bottom: 16px;
+  }
+
   .budget-bar-label {
     display: flex;
     justify-content: space-between;
@@ -126,12 +158,14 @@
     color: #4a5260;
     margin-bottom: 6px;
   }
+
   .budget-bar-track {
     height: 4px;
     background: #1e2128;
     border-radius: 2px;
     overflow: hidden;
   }
+
   .budget-bar-fill {
     height: 100%;
     border-radius: 2px;
@@ -144,8 +178,22 @@
     padding: 12px;
   }
 
-  .rec-action { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
-  .rec-reason { font-size: 12px; color: #6a7280; line-height: 1.5; }
+  .rec-action {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
 
-  .loading { font-size: 12px; color: #3a4050; text-align: center; padding: 20px 0; }
+  .rec-reason {
+    font-size: 12px;
+    color: #6a7280;
+    line-height: 1.5;
+  }
+
+  .loading {
+    font-size: 12px;
+    color: #3a4050;
+    text-align: center;
+    padding: 20px 0;
+  }
 </style>

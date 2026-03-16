@@ -34,7 +34,7 @@ export interface SuggestedChange {
 
 export interface AgentRecommendation {
   campaignId: string;
-  action: RecommendedAction;
+  action: RecommendedAction | number | `${number}`;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   reason: string;
   suggestedChange: SuggestedChange | null;

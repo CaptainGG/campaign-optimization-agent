@@ -1,6 +1,8 @@
 using CampaignAgent.Core.EventStore;
 using CampaignAgent.Core.Models;
 using CampaignAgent.Core.Agent;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace CampaignAgent.Core.Simulation;
 
